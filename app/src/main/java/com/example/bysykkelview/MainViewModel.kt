@@ -1,5 +1,6 @@
 package com.example.bysykkelview
 
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.bysykkelview.api.RetrofitBuilder
@@ -14,12 +15,22 @@ class MainViewModel: ViewModel() {
     var liveStationInformationRoot: MutableLiveData<StationInformationRoot> = MutableLiveData()
     var liveStationStatusRoot: MutableLiveData<StationStatusRoot> = MutableLiveData()
 
+    val liveStationInformationAggregation: MediatorLiveData<Pair<StationInformationRoot?, StationStatusRoot?>> =
+            MediatorLiveData<Pair<StationInformationRoot?, StationStatusRoot?>>().apply {
+                addSource(liveStationInformationRoot) { value = Pair(it, liveStationStatusRoot.value) }
+                addSource(liveStationStatusRoot) { value = Pair(liveStationInformationRoot.value, it) }
+    }
+
     fun getLiveStationInformationObserver(): MutableLiveData<StationInformationRoot> {
         return liveStationInformationRoot
     }
 
     fun getLiveStationStatusObserver(): MutableLiveData<StationStatusRoot> {
         return liveStationStatusRoot
+    }
+
+    fun getLiveStationInformationAggregationObserver(): MediatorLiveData<Pair<StationInformationRoot?, StationStatusRoot?>> {
+        return liveStationInformationAggregation
     }
 
     fun makeStationInformationApiCall() {
