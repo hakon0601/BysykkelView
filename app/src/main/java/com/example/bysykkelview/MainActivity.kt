@@ -90,7 +90,7 @@ private fun StationListComposable(stations: List<StationInformation>, statuses: 
             .padding(horizontal = 10.dp),
     ) {
         for (station in stations.sortedBy { it.name }) {
-            val status = statuses.find { it.station_id == station.station_id }
+            val status = statuses.find { it.stationId == station.stationId }
             Row(horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.padding(top = 10.dp).fillMaxWidth(),
             ) {
